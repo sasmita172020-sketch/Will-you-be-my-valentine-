@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine 💘</title>
+
+<style>
+  * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ff5f9e, #ffc3a0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  .container { text-align: center; width: 100%; max-width: 420px; padding: 20px; }
+  h1 { color: #fff; font-size: 1.9rem; margin-bottom: 10px; }
+  .msg { color: #fff; font-size: 1rem; min-height: 28px; margin-bottom: 20px; }
+  button {
+    width: 100%;
+    height: 58px;
+    border-radius: 30px;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .yes { background: #ff2e63; color: #fff; }
+  .no { background: #fff; color: #ff2e63; position: absolute; left: 50%; transform: translateX(-50%); }
+  .result { display: none; color: #fff; font-size: 1.6rem; line-height: 1.6; }
+
+  /* flash */
+  .flash {
+    position: fixed; inset: 0;
+    background: white; opacity: 0;
+    pointer-events: none; z-index: 999;
+    animation: flash 0.35s ease;
+  }
+  @keyframes flash { 0% {opacity:0;} 40% {opacity:0.95;} 100% {opacity:0;} }
+
+  .ring-wrap {
+    position: fixed; left:50%; top:45%;
+    transform: translate(-50%, -50%);
+    width:120px; height:120px; perspective:800px; z-index:20;
+  }
+  .ring-bottom, .ring-top {
+    position:absolute; font-size:64px; left:50%; top:50%; transform:translate(-50%,-50%);
+  }
+  .ring-top { transform-origin:left center; }
+  @keyframes openRing {
+    0% { transform:translate(-50%,-50%) rotateY(0deg); }
+    60% { transform:translate(-50%,-50%) rotateY(-70deg); }
+    100% { transform:translate(-50%,-50%) rotateY(-110deg); opacity:0.85; }
+  }
+  .hinge-heart {
+    position:absolute; left:50%; top:50%;
+    font-size:42px; transform:translate(-50%,-50%) scale(0);
+    animation: heartRise 1.5s ease forwards; animation-delay:0.9s;
+  }
+  @keyframes heartRise {
+    0% {transform:translate(-50%,-50%) scale(0);opacity:0;}
+    40% {transform:translate(-50%,-90%) scale(1.2);opacity:1;}
+    100% {transform:translate(-50%,-160%) scale(1);opacity:0;}
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container" id="main">
+  <h1>Will you be my Valentine? 💖</h1>
+  <div class="msg" id="msg">Choose wisely 😌</div>
+  <button class="yes" id="yesBtn">YES 💕</button>
+  <button class="no" id="noBtn">NO 🙅‍♀️</button>
+</div>
+
+<div class="container result" id="result">
+  🌙💖 I love you to the moon and back  
+  <br><br>
+  Will you be my Valentine? 💍✨
+</div>
+
+<div id="flash"></div>
+
+<script>
+  const noBtn = document.getElementById("noBtn");
+  const yesBtn = document.getElementById("yesBtn");
+  const msg = document.getElementById("msg");
+  let noCount = 0, unlockAt=5;
+
+  const earlyYesLines = [
+    "So fast? At least pretend to resist 😏",
+    "Hmm… you didn’t even try NO properly 😌",
+    "Eager much? Destiny needs drama 💘",
+    "Nice, but the universe wants 5 NOs first 😈"
+  ];
+
+  noBtn.addEventListener("click", () => {
+    noCount++;
+    const x = Math.random()*(window.innerWidth-100);
+    const y = Math.random()*(window.innerHeight-60);
+    noBtn.style.left = x + "px"; noBtn.style.top = y + "px";
+    msg.textContent = `NO count: ${noCount}/${unlockAt} 😏`;
+    if (navigator.vibrate) navigator.vibrate(80);
+  });
+
+  yesBtn.addEventListener("click", () => {
+    if (noCount < unlockAt) {
+      msg.textContent = earlyYesLines[Math.floor(Math.random()*earlyYesLines.length)];
+      return;
+    }
+    document.getElementById("main").style.display="none";
+    document.getElementById("result").style.display="block";
+    showRing();
+  });
+
+  function showRing() {
+    const flash = document.getElementById("flash");
+    flash.className="flash";
+    setTimeout(()=>flash.className="",400);
+
+    const wrap=document.createElement("div"); wrap.className="ring-wrap";
+    const bottom=document.createElement("div"); bottom.className="ring-bottom"; bottom.textContent="💍";
+    const top=document.createElement("div"); top.className="ring-top"; top.textContent="💍";
+    top.style.animation="openRing 1.2s ease forwards";
+
+    const heart=document.createElement("div"); heart.className="hinge-heart"; heart.textContent="💖";
+
+    wrap.appendChild(bottom); wrap.appendChild(top); wrap.appendChild(heart);
+    document.body.appendChild(wrap);
+
+    setTimeout(()=>wrap.remove(),3000);
+  }
+</script>
+
+</body>
+</html>
